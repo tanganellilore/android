@@ -31,6 +31,7 @@ services:
   - name: server-oldest-stable
     image: nextcloudci/server:server-13
     environment:
+      EVAL: true
       BRANCH: stable16
     commands:
       - /initnc.sh
