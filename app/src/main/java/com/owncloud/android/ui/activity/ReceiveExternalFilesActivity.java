@@ -255,7 +255,14 @@ public class ReceiveExternalFilesActivity extends FileActivity
         }
 
         initTargetFolder();
-        populateDirectoryList();
+        String full_path = generatePath(mParents);
+        final OCFile fileByPath = getStorageManager().getFileByPath(full_path);
+        if (fileByPath != null) {
+            startSyncFolderOperation(fileByPath);
+            populateDirectoryList();
+        } else {
+            browseToRoot();
+        }
     }
 
     @Override
@@ -621,8 +628,13 @@ public class ReceiveExternalFilesActivity extends FileActivity
         } else {
             mParents.pop();
             String full_path = generatePath(mParents);
-            startSyncFolderOperation(getStorageManager().getFileByPath(full_path));
-            populateDirectoryList();
+            final OCFile fileByPath = getStorageManager().getFileByPath(full_path);
+            if (fileByPath != null) {
+                startSyncFolderOperation(fileByPath);
+                populateDirectoryList();
+            } else {
+                browseToRoot();
+            }
         }
     }
 
@@ -823,6 +835,10 @@ public class ReceiveExternalFilesActivity extends FileActivity
     }
 
     private void startSyncFolderOperation(OCFile folder) {
+        if (folder == null) {
+            throw new IllegalArgumentException("Folder must not be null");
+        }
+
         long currentSyncTime = System.currentTimeMillis();
 
         mSyncInProgress = true;
@@ -1075,6 +1091,8 @@ public class ReceiveExternalFilesActivity extends FileActivity
     private void browseToRoot() {
         OCFile root = getStorageManager().getFileByPath(OCFile.ROOT_PATH);
         mFile = root;
+        mParents.clear();
+        mParents.add("");
         startSyncFolderOperation(root);
     }
 
