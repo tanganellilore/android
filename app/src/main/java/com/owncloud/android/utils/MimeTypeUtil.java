@@ -1,7 +1,9 @@
 /*
  * ownCloud Android client application
  * <p>
+ * @author TSI-mc
  * Copyright (C) 2016 ownCloud Inc.
+ * Copyright (C) 2023 TSI-mc
  * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -142,6 +144,7 @@ public final class MimeTypeUtil {
     public static Drawable getFolderTypeIcon(boolean isSharedViaUsers,
                                              boolean isSharedViaLink,
                                              boolean isEncrypted,
+                                             boolean isAutoUploadFolder,
                                              boolean isGroupFolder,
                                              WebdavEntry.MountType mountType,
                                              Context context,
@@ -150,12 +153,14 @@ public final class MimeTypeUtil {
 
         if (WebdavEntry.MountType.GROUP == mountType || isGroupFolder) {
             drawableId = R.drawable.folder_group;
-        } else if (isSharedViaLink) {
+        } else if (isSharedViaLink && !isEncrypted) {
             drawableId = R.drawable.folder_shared_link;
         } else if (isSharedViaUsers) {
             drawableId = R.drawable.folder_shared_users;
         } else if (isEncrypted) {
             drawableId = R.drawable.folder_encrypted;
+        } else if (isAutoUploadFolder) {
+            drawableId = R.drawable.folder_auto_upload;
         } else if (WebdavEntry.MountType.EXTERNAL == mountType) {
             drawableId = R.drawable.folder_external;
         } else {
@@ -170,6 +175,7 @@ public final class MimeTypeUtil {
     public static Drawable getDefaultFolderIcon(Context context,
                                                 ViewThemeUtils viewThemeUtils) {
         return getFolderTypeIcon(false,
+                                 false,
                                  false,
                                  false,
                                  false,
@@ -490,6 +496,10 @@ public final class MimeTypeUtil {
         MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-visio.template", R.drawable.file_doc);
         MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-word.document.macroEnabled.12", R.drawable.file_doc);
         MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-word.template.macroEnabled.12", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.formula", R.drawable.file_analytics);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.formula-template", R.drawable.file_analytics);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.graphics", R.drawable.file_analytics);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.graphics-template", R.drawable.file_analytics);
         MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.presentation", R.drawable.file_ppt);
         MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.presentation-template", R.drawable.file_ppt);
         MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.spreadsheet", R.drawable.file_xls);
